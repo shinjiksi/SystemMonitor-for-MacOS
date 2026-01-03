@@ -25,19 +25,22 @@ SystemMonitor/
 
 ---
 
-## Usage
+## Usage (Command-Line)
 
-### Integration
+You can test or run the monitor from the terminal using Swift scripts or a Playground:
 
-1. Copy the following files into your project:  
+1. Create a Swift file, e.g., `main.swift`, and copy the monitor files into the same folder:
 
-   - `SystemMonitor.swift`  
-   - `StatusBarController.swift`  
-   - `MonitorTimer.swift`  
+SystemMonitor/
+├─ SystemMonitor.swift
+├─ MonitorTimer.swift
+└─ main.swift
 
-2. Initialize the monitor in your project:
+2. In `main.swift`:
 
 ```swift
+import Foundation
+
 let monitor = SystemMonitor()
 let timer = MonitorTimer(monitor: monitor)
 
@@ -45,32 +48,15 @@ timer.start(interval: 1.0) {
     let cpu = monitor.cpuUsage()
     let mem = monitor.memoryUsage()
     let net = monitor.networkUsage()
-    
-    print("CPU: \(monitor.formatCPU(cpu)) MEM: \(monitor.formatMemory(mem)) NET: ↑\(monitor.formatNetworkSpeed(net.up)) ↓\(monitor.formatNetworkSpeed(net.down))")
+
+    print("CPU: \(monitor.formatCPU(cpu)) / MEM: \(monitor.formatMemory(mem)) / NET: ↑\(monitor.formatNetworkSpeed(net.up)) ↓\(monitor.formatNetworkSpeed(net.down))")
 }
-The formatted strings are 3-digit fixed width.
-CPU / Memory: ·25% (leading placeholders for alignment)
-Network: -10 Mbps (unit automatically adjusted)
-Network Quality Coloring
-Network speed is classified as:
-Status    Condition
-Good    ↑ ≥ 200 Mbps and ↓ ≥ 500 Mbps
-Normal    ↑ 20–200 Mbps or ↓ 50–500 Mbps
-Bad    ↑ < 20 Mbps or ↓ < 50 Mbps
-In StatusBarController, this is reflected with color coding:
-Red for bad
-White for normal
-Green for good
-Requirements
-macOS 10.15+
-Swift 5+
-Xcode recommended for integration
-Note: This is not a standalone app. To make it an app, integrate into a macOS App project with NSApplication and a status bar controller.
-License
-MIT License
-MIT License
-...
-Notes
-Network speed measurement uses en0 / en1 interfaces (Ethernet/Wi-Fi).
-CPU calculation uses host_cpu_load_info for differential computation.
-Memory calculation uses vm_statistics64 for accurate usage stats.
+```
+// Keep the script running
+RunLoop.main.run()
+Run the script in the terminal:
+swift main.swift
+CPU / Memory are displayed as percentages in 3-digit fixed-width format, with placeholders for leading zeros (e.g., ··5%)
+Network speed is displayed as integers with automatic unit conversion (Kbps / Mbps / Gbps), e.g., --5 Mbps
+
+
